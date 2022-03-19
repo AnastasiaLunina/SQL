@@ -1,6 +1,6 @@
 ## Flowchart
 
-![](https://github.com/AnastasiaLunina/SQL/blob/main/Introduction/diagram.png?raw=true) 
+![](diagram.png) 
 
 ## SQL commands
 
@@ -29,4 +29,16 @@ CREATE TABLE IF NOT EXISTS Genre (
 	name_genre VARCHAR(40) NOT NULL,
 	id_singer INTEGER REFERENCES Singers(id_singer) NOT NULL
 );
+
+ALTER TABLE Singers 
+ADD id_genre INTEGER REFERENCES Genre(id_genre) NOT NULL;
+
+ALTER TABLE Genre 
+DROP COLUMN IF EXISTS id_singer;
+
+ALTER TABLE Albums 
+ALTER COLUMN year_album TYPE INTEGER USING year_album::integer;
+
+ALTER TABLE Tracks 
+ALTER COLUMN duration_tracks TYPE INTEGER USING duration_tracks::integer;
 ```
