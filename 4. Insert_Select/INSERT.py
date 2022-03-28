@@ -55,7 +55,7 @@ VALUES(1, 'Jazz'),
 connection.execute("""
 INSERT INTO tracks(id_tracks, name_tracks, duration_tracks, id_album)
 VALUES(1, 'Skyfall', 3.06, 1),
-      (2, 'Someone like you', 5.02, 1),
+      (2, 'Someone like you', 5.02, 2),
       (3, 'The Unforgiven', 5.17, 2),
       (4, 'Prince Charming', 2.45, 2),
       (5, 'No Time To Die', 4.12, 3),
