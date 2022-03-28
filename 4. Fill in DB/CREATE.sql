@@ -1,4 +1,3 @@
-```sql
 CREATE TABLE IF NOT EXISTS Singers (
 	id_singer SERIAL PRIMARY KEY NOT NULL,
 	nickname VARCHAR(40) UNIQUE NOT NULL,
@@ -45,4 +44,3 @@ CREATE TABLE Collection_tracks (
 	id_tracks INTEGER NOT NULL REFERENCES Tracks(id_tracks),
 	PRIMARY KEY (id_collection, id_tracks)
 );
-```
