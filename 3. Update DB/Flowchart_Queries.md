@@ -19,16 +19,19 @@ CREATE TABLE IF NOT EXISTS Collection (
 
 CREATE TABLE IF NOT EXISTS Singers_Genre (
 	id_singer INTEGER NOT NULL REFERENCES Singers(id_singer),
-	id_genre INTEGER NOT NULL REFERENCES Genre(id_genre)	
+	id_genre INTEGER NOT NULL REFERENCES Genre(id_genre),
+	PRIMARY KEY (id_singer, id_genre)	
 );
 
 CREATE TABLE IF NOT EXISTS Singers_Albums (
 	id_album INTEGER NOT NULL REFERENCES Albums(id_album),
-	id_singer INTEGER NOT NULL REFERENCES Singers(id_singer)
+	id_singer INTEGER NOT NULL REFERENCES Singers(id_singer),
+	PRIMARY KEY (id_album, id_singer)
 );
 
 CREATE TABLE Collection_tracks (
 	id_collection INTEGER NOT NULL REFERENCES Collection(id_collection),
-	id_tracks INTEGER NOT NULL REFERENCES Tracks(id_tracks)
+	id_tracks INTEGER NOT NULL REFERENCES Tracks(id_tracks),
+	PRIMARY KEY (id_collection, id_tracks)
 );
 ```
