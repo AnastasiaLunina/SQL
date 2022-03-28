@@ -1,5 +1,5 @@
 postgresql = {"pguser": "postgres",
-              "pgpassword": "Mimishka20",
+              "pgpassword": "",
               "pghost": "localhost",
               "pgport": 5432,
               "pgdb": "music_db"
