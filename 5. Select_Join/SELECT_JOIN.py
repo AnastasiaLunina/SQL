@@ -26,7 +26,7 @@ select_singers = connection.execute("""
     JOIN singers_genre SG on G.id_genre = SG.id_genre
     GROUP BY G.name_genre;
 """).fetchall()
-pprint(f"Number of singers in each genre: {select_singers}")
+pprint(f"#1 Number of singers in each genre: {select_singers}")
 
 # 2. Number of tracks in albums dated 2019-2020
 select_tracks = connection.execute("""
@@ -37,7 +37,7 @@ select_tracks = connection.execute("""
     GROUP BY A.year_album;
 """).fetchall()
 print()
-pprint(f"Number of tracks in albums dated 2019-2020: {select_tracks}")
+pprint(f"#2 Number of tracks in albums dated 2019-2020: {select_tracks}")
 
 # 3. Average track duration on each album
 select_track_duration = connection.execute("""
@@ -47,22 +47,25 @@ select_track_duration = connection.execute("""
     group BY A.name_album;
 """).fetchall()
 print()
-pprint(f"Average track duration on each album: {select_track_duration}")
+pprint(f"#3 Average track duration on each album: {select_track_duration}")
 
 # 4. All singers who did not release albums in 2020
 select_release = connection.execute("""
-    SELECT DISTINCT S.nickname
-    FROM singers_albums SA
-    JOIN albums A ON SA.id_album = A.id_album
-    JOIN singers S ON S.id_singer = SA.id_singer
-    WHERE A.year_album != 2020;
+    SELECT DISTINCT s.nickname FROM singers s
+    WHERE s.nickname NOT IN (
+        SELECT DISTINCT s.nickname FROM singers s
+        LEFT JOIN singers_albums sa ON s.id_singer = sa.id_singer
+        LEFT JOIN albums a ON a.id_album = sa.id_album
+        WHERE a.year_album = 2020
+        )
+    ORDER BY s.nickname;
 """).fetchall()
 print()
-pprint(f"All singers who did not release albums in 2020: {select_release}")
+pprint(f"#4 All singers who did not release albums in 2020: {select_release}")
 
 # 5. Name of collections where singer = "Eminem"
 select_singer = connection.execute("""
-    SELECT DISTINCT C.name_collection, S.nickname
+    SELECT DISTINCT C.name_collection
     FROM collection C
     JOIN collection_tracks CT ON C.id_collection = CT.id_collection
     JOIN tracks T ON T.id_tracks = CT.id_tracks
@@ -72,7 +75,7 @@ select_singer = connection.execute("""
     WHERE S.nickname = 'Eminem';
 """).fetchall()
 print()
-pprint(f"Name of collections where singer = 'Eminem': {select_singer}")
+pprint(f"#5 Name of collections where singer = 'Eminem': {select_singer}")
 
 # 6. Name of albums where the singers of more the one genre present.
 select_singer_genre = connection.execute("""
@@ -86,7 +89,7 @@ select_singer_genre = connection.execute("""
     HAVING COUNT(SG.id_genre) > 1;
 """).fetchall()
 print()
-pprint(f"Name of albums where the singers of more the one genre present: {select_singer_genre}")
+pprint(f"#6 Name of albums where the singers of more the one genre present: {select_singer_genre}")
 
 # 7. Name of tracks which are not included in any collection.
 select_not_included = connection.execute("""
@@ -97,7 +100,7 @@ select_not_included = connection.execute("""
     WHERE CT.id_tracks IS NULL;
 """).fetchall()
 print()
-pprint(f"Name of tracks which are not included in any collection: {select_not_included}")
+pprint(f"#7 Name of tracks which are not included in any collection: {select_not_included}")
 
 # 8. Singer with the shortest track.
 select_shortest = connection.execute("""
@@ -110,16 +113,28 @@ select_shortest = connection.execute("""
     IN (SELECT MIN(duration_tracks) FROM tracks);
 """).fetchall()
 print()
-pprint(f"Singer with the shortest track: {select_shortest}")
+pprint(f"#8 Singer with the shortest track: {select_shortest}")
 
 # 9. Name of albums with the least amount of songs.
 select_least_songs = connection.execute("""
-    SELECT A.name_album, COUNT(T.id_tracks)
-    FROM albums A
-    JOIN tracks T ON A.id_album = T.id_album
-    GROUP BY A.name_album
-    ORDER BY COUNT(T.id_tracks) ASC
-    LIMIT 1;
+    SELECT DISTINCT A.name_album
+    FROM albums AS A
+    LEFT JOIN tracks as T ON T.id_album = A.id_album
+    WHERE T.id_album IN
+        (
+        SELECT T.id_album 
+        FROM tracks T
+        GROUP BY T.id_album 
+        HAVING COUNT(T.id_tracks) = 
+            (
+            SELECT COUNT(T.id_tracks)
+            FROM tracks T
+            GROUP BY T.id_album 
+            ORDER BY COUNT
+            LIMIT 1
+            )
+    )
+    ORDER BY A.name_album;
 """).fetchall()
 print()
-pprint(f"Name of albums with the least amount of songs: {select_least_songs}")
+pprint(f"#9 Name of album(s) with the least amount of songs: {select_least_songs}")
