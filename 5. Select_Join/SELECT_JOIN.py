@@ -115,7 +115,7 @@ select_shortest = connection.execute("""
 print()
 pprint(f"#8 Singer with the shortest track: {select_shortest}")
 
-# 9. Name of albums with the least amount of songs.
+# 9. Name of album(s) with the least amount of tracks.
 select_least_songs = connection.execute("""
     SELECT DISTINCT A.name_album
     FROM albums AS A
